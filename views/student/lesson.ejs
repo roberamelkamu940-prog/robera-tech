@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title><%= title %></title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body style="font-family: Arial, sans-serif; background: #f8f9fa; margin: 0; padding: 20px;">
+    <div style="max-width: 900px; margin: auto; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.05);">
+        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; padding-bottom: 15px; margin-bottom: 20px;">
+            <h2><%= course.title %></h2>
+            <a href="/student/dashboard" style="color: #007bff; text-decoration: none; font-weight: bold;">← Dashboard</a>
+        </div>
+
+        <h3>Course Lessons</h3>
+        <% if (lessons.length === 0) { %>
+            <p style="color: #666;">No lessons available for this course yet.</p>
+        <% } else { %>
+            <div style="display: flex; flex-direction: column; gap: 15px;">
+                <% lessons.forEach((lesson, index) => { %>
+                    <div style="border: 1px solid #ddd; border-radius: 6px; padding: 15px; background: #fff;">
+                        <h4 style="margin-top: 0; color: #333;">Lesson <%= index + 1 %>: <%= lesson.title %></h4>
+                        <p style="color: #555; white-space: pre-line;"><%= lesson.content %></p>
+                        <% if (lesson.video_url) { %>
+                            <p><a href="<%= lesson.video_url %>" target="_blank" style="color: #007bff; font-weight: bold;">📺 Watch Video Tutorial</a></p>
+                        <% } %>
+                    </div>
+                <% }) %>
+            </div>
+        <% } %>
+    </div>
+</body>
+</html>

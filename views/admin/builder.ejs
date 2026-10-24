@@ -1,0 +1,98 @@
+<%- include('../partials/header') %>
+
+<div class="container py-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="fw-bold text-dark mb-1">Curriculum Builder: <%= course.title %></h2>
+            <p class="text-muted">Add modules (sections) and lessons to structure your course.</p>
+        </div>
+        <a href="/admin/dashboard" class="btn btn-outline-secondary fw-bold">&larr; Back to Dashboard</a>
+    </div>
+
+    <div class="row">
+        <!-- Existing Curriculum Tree -->
+        <div class="col-md-7">
+            <h4 class="fw-bold mb-3 text-secondary">Course Structure</h4>
+            <% if (sections && sections.length > 0) { %>
+                <% sections.forEach(section => { %>
+                    <div class="card shadow-sm border-0 mb-3">
+                        <div class="card-header bg-light d-flex justify-content-between align-items-center py-3">
+                            <h5 class="fw-bold mb-0 text-dark">📁 <%= section.title %></h5>
+                            <span class="badge bg-secondary">Order: <%= section.section_order %></span>
+                        </div>
+                        <div class="card-body">
+                            <% if (section.lessons && section.lessons.length > 0) { %>
+                                <ul class="list-group list-group-flush">
+                                    <% section.lessons.forEach(lesson => { %>
+                                        <li class="list-group-item d-flex justify-content-between align-items-center py-2 px-0 border-0 border-bottom">
+                                            <span>📄 <%= lesson.title %></span>
+                                            <span class="badge bg-light text-dark border">Lesson <%= lesson.lesson_order %></span>
+                                        </li>
+                                    <% }) %>
+                                </ul>
+                            <% } else { %>
+                                <p class="text-muted small mb-0 fst-italic">No lessons added to this section yet.</p>
+                            <% } %>
+                        </div>
+                    </div>
+                <% }) %>
+            <% } else { %>
+                <div class="alert alert-light border text-center py-4 text-muted">
+                    No sections created yet. Use the form on the right to add your first module!
+                </div>
+            <% } %>
+        </div>
+
+        <!-- Add Section & Lesson Forms -->
+        <div class="col-md-5">
+            <!-- Add Section Card -->
+            <div class="card shadow-sm border-0 p-4 mb-4">
+                <h4 class="fw-bold mb-3 text-dark">Add New Module</h4>
+                <form action="/admin/courses/<%= course.id %>/section" method="POST">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Module Title</label>
+                        <input type="text" name="title" class="form-control" placeholder="e.g., Module 2: Advanced Routing" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Section Order</label>
+                        <input type="number" name="section_order" class="form-control" value="1" required>
+                    </div>
+                    <button type="submit" class="btn btn-dark w-100 fw-bold py-2">Create Module</button>
+                </form>
+            </div>
+
+            <!-- Add Lesson Card -->
+            <% if (sections && sections.length > 0) { %>
+                <div class="card shadow-sm border-0 p-4">
+                    <h4 class="fw-bold mb-3 text-dark">Add New Lesson</h4>
+                    <form action="" method="POST" id="lessonForm">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Select Module</label>
+                            <select name="sectionIdSelect" class="form-select" id="sectionSelect" required onchange="document.getElementById('lessonForm').action = '/admin/sections/' + this.value + '/lesson';">
+                                <option value="" disabled selected>Choose a module...</option>
+                                <% sections.forEach(sec => { %>
+                                    <option value="<%= sec.id %>"><%= sec.title %></option>
+                                <% }) %>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Lesson Title</label>
+                            <input type="text" name="title" class="form-control" placeholder="e.g., 2.1 Express Middleware" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Content / Instructions</label>
+                            <textarea name="content" class="form-control" rows="3" placeholder="Lesson body text..." required></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Lesson Order</label>
+                            <input type="number" name="lesson_order" class="form-control" value="1" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100 fw-bold py-2">Add Lesson</button>
+                    </form>
+                </div>
+            <% } %>
+        </div>
+    </div>
+</div>
+
+<%- include('../partials/footer') %>

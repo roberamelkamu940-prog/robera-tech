@@ -1,0 +1,35 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    container_name: robera_tech_app
+    restart: always
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - DB_HOST=mysql_db
+      - DB_USER=root
+      - DB_PASSWORD=rootpassword
+      - DB_NAME=robera_tech
+      - CHAPA_SECRET_KEY=${CHAPA_SECRET_KEY}
+      - SESSION_SECRET=${SESSION_SECRET}
+    depends_on:
+      - mysql_db
+
+  mysql_db:
+    image: mysql:8.0
+    container_name: mysql_db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: robera_tech
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+volumes:
+  mysql_data:
