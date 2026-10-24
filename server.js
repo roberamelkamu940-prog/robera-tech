@@ -80,7 +80,8 @@ app.use('/student', studentRoutes);
 app.use('/admin', adminRoutes);
 app.use('/api/webhook', webhookRoutes); //
 // Add this line in server.js near your other app.use middleware
-app.use('/assets', express.static('assets')); Chapa background webhook listener
+// Chapa background webhook listener
+app.use('/assets', express.static('assets'));
 
 // Home Route redirect or render
 app.get('/', (req, res) => {
