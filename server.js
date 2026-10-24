@@ -7,6 +7,10 @@ const path = require('path');
 require('dotenv').config();
 
 const app = express();
+
+// ✅ FIX 1: Trust proxy required for Render deployment (Fixes rate-limit crash)
+app.set('trust proxy', 1);
+
 const PORT = process.env.PORT || 3000;
 
 // 1. Security headers with Helmet
@@ -78,9 +82,9 @@ console.log('DEBUG - adminRoutes type:', typeof adminRoutes);
 app.use('/auth', authRoutes);
 app.use('/student', studentRoutes);
 app.use('/admin', adminRoutes);
-app.use('/api/webhook', webhookRoutes); //
-// Add this line in server.js near your other app.use middleware
-// Chapa background webhook listener
+app.use('/api/webhook', webhookRoutes);
+
+// Chapa background webhook static assets
 app.use('/assets', express.static('assets'));
 
 // Home Route redirect or render
