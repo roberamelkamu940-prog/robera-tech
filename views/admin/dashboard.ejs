@@ -4,46 +4,31 @@
     <!-- Sidebar Navigation -->
     <div class="col-md-3 mb-4">
         <div class="list-group shadow-sm">
-            <a href="/student/dashboard" class="list-group-item list-group-item-action active">Dashboard Overview</a>
-            <a href="/courses" class="list-group-item list-group-item-action">Browse Course Catalog</a>
-            <a href="/student/profile" class="list-group-item list-group-item-action">Account Settings</a>
-            <a href="/auth/logout" class="list-group-item list-group-item-action text-danger">Logout</a>
+            <a href="/admin/dashboard" class="list-group-item list-group-item-action active">Dashboard Overview</a>
+            <a href="/admin/courses" class="list-group-item list-group-item-action">Manage Courses</a>
+            <a href="/admin/students" class="list-group-item list-group-item-action">Manage Students</a>
+            <form action="/auth/logout" method="POST" class="list-group-item"><button type="submit" class="btn btn-link text-danger p-0">Sign out</button></form>
         </div>
     </div>
 
     <!-- Main Content Area -->
     <div class="col-md-9">
         <div class="p-4 mb-4 bg-white rounded shadow-sm border">
-            <h2>Welcome back, <%= user.email %>! 👋</h2>
-            <p class="text-muted">Track your enrolled courses, resume lessons, and explore new technical skills on Robera Tech.</p>
+            <h2>Welcome back, <%= user.name || user.email %>.</h2>
+            <p class="text-muted mb-0">Manage course content and keep track of platform activity.</p>
         </div>
 
-        <h4 class="mb-3">Enrolled Courses</h4>
-        
-        <% if (enrolledCourses && enrolledCourses.length > 0) { %>
-            <div class="row">
-                <% enrolledCourses.forEach(course => { %>
-                    <div class="col-md-6 mb-4">
-                        <div class="card h-100 shadow-sm">
-                            <div class="card-body">
-                                <h5 class="card-title"><%= course.title %></h5>
-                                <p class="card-text text-muted small"><%= course.description.substring(0, 80) %>...</p>
-                                <div class="progress mb-3" style="height: 8px;">
-                                    <div class="progress-bar bg-success" role="progressbar" style="width: <%= course.progress || 0 %>%"></div>
-                                </div>
-                                <a href="/student/course/<%= course.id %>" class="btn btn-primary btn-sm w-100">Continue Learning</a>
-                            </div>
-                        </div>
-                    </div>
-                <% }) %>
-            </div>
-        <% } else { %>
-            <div class="text-center p-5 bg-white border rounded shadow-sm">
-                <h5 class="text-muted">You haven't enrolled in any courses yet.</h5>
-                <p class="text-muted small">Explore our catalog to find programming, web development, and computer science tutorials.</p>
-                <a href="/courses" class="btn btn-success mt-2">Browse Course Catalog</a>
-            </div>
-        <% } %>
+        <div class="row g-3" aria-label="Platform overview">
+            <div class="col-6 col-xl-3"><div class="content-panel h-100"><p class="small text-muted mb-1">Students</p><p class="h2 mb-0"><%= stats.students %></p></div></div>
+            <div class="col-6 col-xl-3"><div class="content-panel h-100"><p class="small text-muted mb-1">Courses</p><p class="h2 mb-0"><%= stats.courses %></p></div></div>
+            <div class="col-6 col-xl-3"><div class="content-panel h-100"><p class="small text-muted mb-1">Enrollments</p><p class="h2 mb-0"><%= stats.enrollments %></p></div></div>
+            <div class="col-6 col-xl-3"><div class="content-panel h-100"><p class="small text-muted mb-1">Lessons</p><p class="h2 mb-0"><%= stats.lessons %></p></div></div>
+        </div>
+
+        <div class="d-flex flex-wrap gap-2 mt-4">
+            <a href="/admin/courses" class="btn btn-success">Manage courses and lessons</a>
+            <a href="/admin/students" class="btn btn-outline-success">View student accounts</a>
+        </div>
     </div>
 </div>
 

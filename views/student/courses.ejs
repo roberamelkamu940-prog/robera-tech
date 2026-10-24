@@ -1,32 +1,45 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title><%= title %></title>
-    <link rel="stylesheet" href="/css/style.css">
-</head>
-<body style="font-family: Arial, sans-serif; background: #f8f9fa; margin: 0; padding: 20px;">
-    <div style="max-width: 900px; margin: auto; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.05);">
-        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; padding-bottom: 15px; margin-bottom: 20px;">
-            <h2>Available Courses</h2>
-            <a href="/student/dashboard" style="color: #007bff; text-decoration: none; font-weight: bold;">← Back to Dashboard</a>
-        </div>
+<%- include('../partials/header') %>
 
-        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px;">
+<main class="container py-5">
+    <div class="d-flex flex-wrap justify-content-between align-items-end gap-3 mb-4">
+        <div>
+            <p class="text-uppercase small fw-bold text-success mb-1">Learn at your pace</p>
+            <h1 class="h2 mb-0">Course catalog</h1>
+        </div>
+        <form action="/student/courses" method="GET" class="d-flex gap-2">
+            <label class="visually-hidden" for="course-search">Search courses</label>
+            <input id="course-search" class="form-control" type="search" name="search" value="<%= searchQuery || '' %>" placeholder="Search courses">
+            <button class="btn btn-outline-success" type="submit">Search</button>
+        </form>
+    </div>
+    <% if (courses.length) { %>
+        <div class="row g-3">
             <% courses.forEach(course => { %>
-                <div style="border: 1px solid #ddd; border-radius: 6px; padding: 20px; background: #fff;">
-                    <h3 style="margin-top: 0; color: #333;"><%= course.title %></h3>
-                    <p style="color: #666; font-size: 0.9rem;"><%= course.description %></p>
-                    <% if (course.is_enrolled > 0) { %>
-                        <a href="/student/courses/<%= course.id %>/lessons" style="display: inline-block; background: #17a2b8; color: white; padding: 8px 12px; border-radius: 4px; text-decoration: none; font-size: 0.9rem;">View Lessons</a>
-                    <% } else { %>
-                        <form action="/student/courses/<%= course.id %>/enroll" method="POST">
-                            <button type="submit" style="background: #007bff; color: white; border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer; font-size: 0.9rem;">Enroll Now</button>
-                        </form>
-                    <% } %>
-                </div>
+                <article class="col-md-6 col-xl-4">
+                    <div class="content-panel h-100 d-flex flex-column">
+                        <div class="d-flex justify-content-between gap-2 mb-3">
+                            <span class="badge text-bg-success"><%= course.category %></span>
+                            <span class="small text-muted"><%= course.level %></span>
+                        </div>
+                        <h2 class="h4"><%= course.title %></h2>
+                        <p class="text-muted flex-grow-1"><%= course.description %></p>
+                        <p class="small text-muted"><%= course.lesson_count %> lessons</p>
+                        <% if (course.is_enrolled) { %>
+                            <a href="/student/learn/<%= course.id %>" class="btn btn-success">Continue learning</a>
+                        <% } else if (!user) { %>
+                            <a href="/auth/login" class="btn btn-outline-success">Sign in to enroll</a>
+                        <% } else if (Number(course.price) > 0) { %>
+                            <form action="/student/checkout/<%= course.id %>" method="POST"><button type="submit" class="btn btn-success w-100">Enroll · <%= course.price %> ETB</button></form>
+                        <% } else { %>
+                            <form action="/student/enroll/<%= course.id %>" method="POST"><button type="submit" class="btn btn-success w-100">Enroll for free</button></form>
+                        <% } %>
+                    </div>
+                </article>
             <% }) %>
         </div>
-    </div>
-</body>
-</html>
+    <% } else { %>
+        <div class="empty-state"><h2 class="h4">No courses found</h2><p class="mb-0">Try another search term.</p></div>
+    <% } %>
+</main>
+
+<%- include('../partials/footer') %>

@@ -3,6 +3,7 @@ const session = require('express-session');
 const MySQLStore = require('express-mysql-session')(session);
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
+const crypto = require('crypto');
 const path = require('path');
 require('dotenv').config();
 
@@ -53,16 +54,24 @@ const sessionStoreOptions = {
 };
 
 const sessionStore = new MySQLStore(sessionStoreOptions);
+const sessionSecret = process.env.SESSION_SECRET || (process.env.NODE_ENV === 'production'
+    ? null
+    : crypto.randomBytes(32).toString('hex'));
+
+if (!sessionSecret) {
+    throw new Error('SESSION_SECRET must be set when NODE_ENV=production.');
+}
 
 app.use(session({
     key: 'robera_tech_session',
-    secret: process.env.SESSION_SECRET || 'super_secret_fallback_key',
+    secret: sessionSecret,
     store: sessionStore,
     resave: false,
     saveUninitialized: false,
     cookie: {
         secure: process.env.NODE_ENV === 'production',
         httpOnly: true,
+        sameSite: 'lax',
         maxAge: 86400000 // 1 day
     }
 }));
@@ -72,11 +81,6 @@ const authRoutes = require('./routes/authRoutes');
 const studentRoutes = require('./routes/studentRoutes');
 const adminRoutes = require('./routes/adminRoutes');
 const webhookRoutes = require('./routes/webhookRoutes');
-
-// DEBUG: Let's check which route file is loaded correctly
-console.log('DEBUG - authRoutes type:', typeof authRoutes);
-console.log('DEBUG - studentRoutes type:', typeof studentRoutes);
-console.log('DEBUG - adminRoutes type:', typeof adminRoutes);
 
 // Mount Routes
 app.use('/auth', authRoutes);

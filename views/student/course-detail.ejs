@@ -26,6 +26,10 @@
                     <% if (isEnrolled) { %>
                         <div class="alert alert-success mb-3">You are enrolled in this course!</div>
                         <a href="/student/learn/<%= course.id %>" class="btn btn-success w-100 py-2 fw-bold">Continue Learning</a>
+                    <% } else if (Number(course.price) <= 0) { %>
+                        <form action="/student/enroll/<%= course.id %>" method="POST">
+                            <button type="submit" class="btn btn-success w-100 py-2 fw-bold">Enroll for free</button>
+                        </form>
                     <% } else { %>
                         <form action="/student/checkout/<%= course.id %>" method="POST">
                             <button type="submit" class="btn btn-primary w-100 py-2 fw-bold shadow-sm">Enroll Now via Chapa</button>

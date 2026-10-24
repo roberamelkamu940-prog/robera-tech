@@ -24,7 +24,7 @@
             </div>
             <div style="margin-bottom: 10px;">
                 <label style="display: block; font-weight: bold; margin-bottom: 5px;">Video URL (YouTube or external link)</label>
-                <input type="text" name="video_url" placeholder="https://..." style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;">
+                <input type="url" name="video_url" placeholder="https://..." style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;">
             </div>
             <div style="margin-bottom: 15px;">
                 <label style="display: block; font-weight: bold; margin-bottom: 5px;">Sort Order</label>
@@ -49,6 +49,35 @@
                 <% }) %>
             </ul>
         <% } %>
+
+        <section style="border-top: 1px solid #ddd; margin-top: 30px; padding-top: 20px;">
+            <h3>Course quizzes</h3>
+            <form action="/admin/courses/<%= course.id %>/quizzes" method="POST" style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 20px;">
+                <label class="visually-hidden" for="quiz-title">Quiz title</label>
+                <input id="quiz-title" type="text" name="title" maxlength="150" placeholder="Quiz title" required style="flex: 1 1 220px; padding: 9px; border: 1px solid #ccc; border-radius: 4px;">
+                <button type="submit" style="background: #165b45; color: white; border: 0; padding: 9px 14px; border-radius: 4px;">Create quiz</button>
+            </form>
+            <% quizzes.forEach(quiz => { %>
+                <article style="border: 1px solid #ddd; border-radius: 6px; padding: 16px; margin-bottom: 14px;">
+                    <h4><%= quiz.title %> <small style="color: #666;">(<%= quiz.question_count %> questions)</small></h4>
+                    <form action="/admin/quizzes/<%= quiz.id %>/questions" method="POST">
+                        <label>Question<textarea name="question" rows="2" required style="display: block; width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;"></textarea></label>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 8px; margin: 10px 0;">
+                            <input name="option_a" placeholder="Option A" required style="padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
+                            <input name="option_b" placeholder="Option B" required style="padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
+                            <input name="option_c" placeholder="Option C" required style="padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
+                            <input name="option_d" placeholder="Option D" required style="padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
+                        </div>
+                        <label>Correct answer
+                            <select name="correct_option" required style="padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
+                                <option value="a">A</option><option value="b">B</option><option value="c">C</option><option value="d">D</option>
+                            </select>
+                        </label>
+                        <button type="submit" style="background: #165b45; color: white; border: 0; padding: 9px 14px; border-radius: 4px; margin-left: 8px;">Add question</button>
+                    </form>
+                </article>
+            <% }) %>
+        </section>
     </div>
 </body>
 </html>

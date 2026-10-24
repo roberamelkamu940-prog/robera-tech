@@ -1,4 +1,70 @@
-<form action="/lesson/complete/<%= lessons[0].id %>" method="POST" class="d-flex justify-content-between align-items-center w-100">
-    <span class="badge bg-success p-2">Module Active</span>
-    <button type="submit" class="btn btn-primary fw-bold px-4">Mark as Completed & Next &rarr;</button>
-</form>
+<%- include('../partials/header') %>
+
+<main class="container py-4 classroom-page">
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+        <div>
+            <a href="/student/dashboard" class="text-decoration-none">&larr; My learning</a>
+            <h1 class="h2 mt-2 mb-1"><%= course.title %></h1>
+            <p class="text-muted mb-0"><%= lessons.length %> lessons</p>
+        </div>
+        <a href="/student/courses" class="btn btn-outline-secondary">Course catalog</a>
+    </div>
+
+    <div class="row g-4">
+        <section class="col-lg-8">
+            <% if (activeLesson) { %>
+                <div class="lesson-panel">
+                    <div class="lesson-panel__video">
+                        <% if (activeLesson.video_url) { %>
+                            <a href="<%= activeLesson.video_url %>" target="_blank" rel="noopener noreferrer" class="btn btn-light">Open lesson video</a>
+                        <% } else { %>
+                            <span class="text-white-50">Written lesson</span>
+                        <% } %>
+                    </div>
+                    <div class="p-4 p-md-5">
+                        <p class="text-uppercase small fw-bold text-success mb-2">Lesson <%= lessons.findIndex(lesson => lesson.id === activeLesson.id) + 1 %></p>
+                        <h2 class="h3"><%= activeLesson.title %></h2>
+                        <% if (activeLesson.duration) { %><p class="text-muted"><%= activeLesson.duration %></p><% } %>
+                        <div class="lesson-copy"><%= activeLesson.content || 'No written notes have been added for this lesson.' %></div>
+                        <form action="/student/lesson/complete/<%= activeLesson.id %>" method="POST" class="mt-4">
+                            <% if (completedLessonIds.includes(activeLesson.id)) { %>
+                                <span class="badge text-bg-success">Completed</span>
+                            <% } else { %>
+                                <button type="submit" class="btn btn-success">Mark lesson complete</button>
+                            <% } %>
+                        </form>
+                    </div>
+                </div>
+            <% } else { %>
+                <div class="empty-state"><h2 class="h4">Lessons are being prepared</h2><p class="mb-0">Check back soon for course content.</p></div>
+            <% } %>
+        </section>
+
+        <aside class="col-lg-4">
+            <section class="content-panel mb-4">
+                <h2 class="h5 mb-3">Course lessons</h2>
+                <ol class="lesson-list">
+                    <% lessons.forEach((lesson, index) => { %>
+                        <li class="lesson-list__item <%= activeLesson && activeLesson.id === lesson.id ? 'is-active' : '' %>">
+                            <a href="/student/learn/<%= course.id %>?lesson=<%= lesson.id %>">
+                                <span class="lesson-list__number"><%= index + 1 %></span>
+                                <span><%= lesson.title %></span>
+                                <% if (completedLessonIds.includes(lesson.id)) { %><span class="text-success ms-auto">Done</span><% } %>
+                            </a>
+                        </li>
+                    <% }) %>
+                </ol>
+            </section>
+            <% if (quizzes.length) { %>
+                <section class="content-panel">
+                    <h2 class="h5 mb-3">Course quizzes</h2>
+                    <% quizzes.forEach(quiz => { %>
+                        <a class="quiz-link" href="/student/quiz/<%= quiz.id %>"><span><%= quiz.title %></span><span aria-hidden="true">&rarr;</span></a>
+                    <% }) %>
+                </section>
+            <% } %>
+        </aside>
+    </div>
+</main>
+
+<%- include('../partials/footer') %>

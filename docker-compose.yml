@@ -10,9 +10,10 @@ services:
     environment:
       - NODE_ENV=production
       - PORT=3000
+      - APP_BASE_URL=${APP_BASE_URL:-http://localhost:3000}
       - DB_HOST=mysql_db
       - DB_USER=root
-      - DB_PASSWORD=rootpassword
+      - DB_PASSWORD=${DB_PASSWORD:?Set DB_PASSWORD in .env}
       - DB_NAME=robera_tech
       - CHAPA_SECRET_KEY=${CHAPA_SECRET_KEY}
       - SESSION_SECRET=${SESSION_SECRET}
@@ -24,7 +25,7 @@ services:
     container_name: mysql_db
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD:?Set DB_PASSWORD in .env}
       MYSQL_DATABASE: robera_tech
     ports:
       - "3306:3306"

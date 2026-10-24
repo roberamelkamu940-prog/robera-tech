@@ -1,0 +1,29 @@
+<%- include('../partials/header') %>
+
+<main class="container py-5">
+    <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-4">
+        <div>
+            <p class="text-uppercase small fw-bold text-success mb-1">Administration</p>
+            <h1 class="h2 mb-0">Student accounts</h1>
+        </div>
+        <a href="/admin/dashboard" class="btn btn-outline-secondary">Dashboard</a>
+    </div>
+    <div class="table-responsive content-panel p-0">
+        <table class="table table-hover align-middle mb-0">
+            <thead><tr><th>Name</th><th>Email</th><th>Courses</th><th>Joined</th></tr></thead>
+            <tbody>
+                <% students.forEach(student => { %>
+                    <tr>
+                        <td><%= student.name %></td>
+                        <td><%= student.email %></td>
+                        <td><%= student.enrollment_count %></td>
+                        <td><%= new Date(student.created_at).toLocaleDateString() %></td>
+                    </tr>
+                <% }) %>
+                <% if (!students.length) { %><tr><td colspan="4" class="text-center text-muted py-4">No student accounts yet.</td></tr><% } %>
+            </tbody>
+        </table>
+    </div>
+</main>
+
+<%- include('../partials/footer') %>
